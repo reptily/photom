@@ -1,0 +1,32 @@
+{
+    "name": "photom/framework",
+    "description": "micro open framework",
+    "license": "MIT",
+    "version":"1.0.0",
+    "authors": [
+        {
+            "name": "Reptily",
+            "email": "reptily@go2ride.ru"
+        }
+    ],
+    "keywords": [
+        "framework",
+        "openWeb",
+        "reptily",
+        "photom",
+        "php"
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.2.2"
+        },
+    "autoload": {
+        "psr-4":{
+            "Ph\\":"src"
+        }
+    },
+    "bin":[
+        "photom"
+    ]
+}
+ 
