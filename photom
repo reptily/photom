@@ -1,1 +1,75 @@
 #!/usr/bin/php
+
+<?php
+include "vendor/autoload.php";
+
+if (isset($_SERVER['argv'][1])){
+        $argv = $_SERVER['argv'][1];
+        
+        switch ($argv){
+                case "install":
+                        Install();
+                        break;
+        }
+}
+
+function Install(){
+        createDir("App");
+        createDir("App/Controller");
+        createDir("App/Middleware");
+        createDir("App/Model");
+        createDir("App/View");
+        createDir("assets");
+        createDir("cache");
+        createDir("config");
+        chmod("cache",755);
+        
+        $index = '<?php
+include "../vendor/autoload.php";
+\Ph\Main::Init();';
+        createFile("index.php",$index);
+        
+        $config = '<?php
+$config =
+[
+    \'name\' => \'Photom\',
+    \'tplMain\' => \'index\',
+    \'indexModule\' => \'home\',
+    \'cookie_time\' => 2592000,
+    \'cache\' => true,
+    \'dir\' => \'./\',
+    \'host\' => \'127.0.0.1\',
+    \'mail\' =>[
+        \'smtp_host\' => \'\',
+        \'smtp_port\' => \'587\',
+        \'email\' => \'\',
+        \'smtp_pwd\' => \'\',
+        \'name\' => \'Photom\'
+    ],
+    \'db\' => [
+        \'host\' => \'127.0.0.1\',
+        \'login\' => \'\',
+        \'pwd\' => \'\',
+        \'db\' => \'\',
+        \'prefix\' => \'\'
+    ],
+    \'css\' => [
+            ],
+    \'js\' => [
+            ]
+];';
+        createFile("config/config.php",$config);
+        
+}
+
+function createDir($dir){
+        if (!is_dir($dir)){
+                mkdir($dir);
+        }
+}
+
+function createFile($file,$text){
+        if (!is_file($file)){
+               file_put_contents($file,$text);
+        }
+}
