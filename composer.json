@@ -16,7 +16,7 @@
         "photom",
         "php"
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "php": "^7.2.2"
         },
