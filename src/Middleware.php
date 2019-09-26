@@ -10,4 +10,8 @@ class Middleware
   public function stop(){
     \Ph\Header::send(502);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f61735f87ec4c3cdd636aafd5b83e7e87c78928d
