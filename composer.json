@@ -2,11 +2,7 @@
     "name": "photom/framework",
     "description": "micro open framework",
     "license": "MIT",
-<<<<<<< HEAD
     "version":"1.1.0",
-=======
-    "version":"1.0.1",
->>>>>>> f61735f87ec4c3cdd636aafd5b83e7e87c78928d
     "authors": [
         {
             "name": "Reptily",
