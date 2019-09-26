@@ -31,10 +31,6 @@ The framework has support for Domain objects that can easily integrate with a bu
 
 ```
 composer require photom/framework
-<<<<<<< HEAD
-```
-=======
 ln vendor/photom/framework/photom photom
 photom install
 ```
->>>>>>> 04cc2a3af101f2048efaab5cac74cbac415529b5
