@@ -1,1 +1,6 @@
 #!/usr/bin/php
+
+<?php
+include "vendor/autoload.php";
+
+new Ph\Console\Main;
