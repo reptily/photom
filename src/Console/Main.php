@@ -5,16 +5,16 @@ class Main
 {
     public function __construct(){
         if (isset($_SERVER['argv'][1])){
-            $this->Controller($_SERVER['argv'][1], $_SERVER['argv'][2] ?? null);
+            $this->Controller($_SERVER['argv'][1], $_SERVER['argv'][2] ?? null, $_SERVER['argv'][3] ?? null);
         } else {
             $this->Controller("help");
         }
     }
     
-    public function Controller($action, $value=null){
+    public function Controller($action, $value=null, $args=null){
 		$command = explode(":",$action);
 		$action=$command[0];
-		$command=$command[1] ?? null;
+		$command=$command[1] ?? null;	
 		
 		$class = "\\Ph\\Console\\Action\\".ucfirst($action);
 		
@@ -23,7 +23,7 @@ class Main
 				$class::Handle();
 			} else {
 				if (method_exists($class,ucfirst($command))){
-					$class::$command();
+					$class::$command($args);
 				} else {
 					\Ph\Console\Alert::Error("Command not found");
 				}
