@@ -32,12 +32,12 @@ class DB
         }
     }
     
-    public function field($field):DB{
+    public function field($field): DB{
         $this->field=$field;
         return $this;
     }
     
-    public function where(...$where):DB{
+    public function where(...$where): DB{
         $or=false;
         foreach ($where as $w){
             if (is_array($w)){
@@ -70,26 +70,26 @@ class DB
         return $this;
     }
         
-    public function inner($table):DB{
+    public function inner($table): DB{
         $this->joinTable=$table;
         $this->join.=" INNER JOIN `".$this->es($table)."` ";
         return $this;
     }
     
-    public function left($table):DB{
+    public function left($table): DB{
         $this->joinTable=$table;
         $this->join.=" LEFT JOIN `".$this->es($table)."` ";
         return $this;
     }
     
-    public function on($t1,$t2):DB{
+    public function on($t1,$t2): DB{
         $this->join.="ON `".$this->callTable."`.`".$this->es($t1)."` = `".$this->joinTable."`.`".$this->es($t2)."` ";
         return $this;
     }
     
-    public function set($set):DB{
+    public function set($set): DB{
         $this->set = "SET ";
-        $vals = ""; 
+        $vals = "";
         foreach ($set as $key=>$val){
             $vals .= "`".$this->es($key)."` = '".$this->es($val)."',";
         }
@@ -97,7 +97,7 @@ class DB
         return $this;
     }
     
-    public function limit(int $l1, int $l2=-1):DB{
+    public function limit(int $l1, int $l2=-1): DB{
         if ($l2 == -1){
           $this->limit=$l1;
         } else {
@@ -106,7 +106,7 @@ class DB
         return $this;
     }    
     
-    public function order($key,$value):DB{
+    public function order($key,$value): DB{
         if ("ASC" == mb_strtoupper($value)){
             $value="ASC";
         } else {
@@ -117,16 +117,16 @@ class DB
         return $this;
     }
     
-    public function __get($property):object{
+    public function __get($property){
         $this->callTable=$property;
-        return $this->tables[$property];
+        return $this->tables[$property] ?? false;
     }
     
     public function __set($property,$value=null){
         $this->tables[$property]=$value;
     }
     
-    public function Select():object{
+    public function Select(): object{
         //Feild
         $fields="* ";
         if (is_array($this->field)){
@@ -172,47 +172,49 @@ class DB
             public $result;
             
             public function __construct($result){
-            $this->result=$result;
+                $this->result=$result;
             }
             
-            public function getArray():array{
-            $array = [];
-            while($row = $this->result->fetch_array(MYSQLI_ASSOC))
-                $array[]=$row;
-            if ($this->debug)
-                $this->Debug(json_encode($array)."<br>\n");
-            return $array;
+            public function getArray(): array{
+                $array = [];
+                while($row = $this->result->fetch_array(MYSQLI_ASSOC)){
+                    $array[]=$row;
+                }
+                if ($this->debug){
+                    $this->Debug(json_encode($array)."<br>\n");
+                }
+                return $array;
             }
             
-            public function getRow():array{
-            return $this->result->fetch_array(MYSQLI_ASSOC);
+            public function getRow(): array{
+                return $this->result->fetch_array(MYSQLI_ASSOC);
             }
             
-            public function getJson():string{
-            return json_encode($this->getArray());
+            public function getJson(): string{
+                return json_encode($this->getArray());
             }
         };
     }
     
-    public function Insert($arr):DB{
+    public function Insert($arr): DB{
         $sql = "INSERT INTO `".$this->callTable."`";
         $keys="";
         $vals="";
         $_2d=true;
         foreach ($arr as $key=>$val){
             if (is_array($val)){
-            foreach ($val as $keyChild=>$valChild){
-                if ($_2d){
-                $keys .= "`".$this->es($keyChild)."`,";
-                $_2d=false;
+                foreach ($val as $keyChild=>$valChild){
+                    if ($_2d){
+                        $keys .= "`".$this->es($keyChild)."`,";                        
+                    }
+                    $vals .= "'".$this->es($valChild)."',";
                 }
-                $vals .= "'".$this->es($valChild)."',";
-            }
-            $vals=mb_substr($vals, 0, -1);
-            $vals .= "),(";
+                $_2d=false;
+                $vals=mb_substr($vals, 0, -1);
+                $vals .= "),(";
             } else {
-            $keys .= "`".$this->es($key)."`,";
-            $vals .= "'".$this->es($val)."',";
+                $keys .= "`".$this->es($key)."`,";
+                $vals .= "'".$this->es($val)."',";
             }
         }
         
@@ -226,7 +228,7 @@ class DB
         return $this;
         }
         
-        public function Delete():DB{
+        public function Delete(): DB{
         $sql = "DELETE FROM `".$this->callTable."`";
         
         //WHERE
@@ -239,7 +241,7 @@ class DB
         return $this;
     }
     
-    public function Update():DB{
+    public function Update(): DB{
         $sql = "UPDATE `".$this->callTable."` ".$this->set;
         
         //WHERE
@@ -252,7 +254,7 @@ class DB
         return $this;
     }
     
-    private function getArray($result):array{
+    private function getArray($result): array{
         $array = [];
         while($row = $result->fetch_array(MYSQLI_ASSOC)){
             $array[]=$row;
@@ -337,14 +339,26 @@ class DB
         $this->$table=$this;
     }
     
-    public function getPrimary():array{
+    public function getPrimary(): string{
         $sql = "SHOW KEYS FROM `".$this->callTable."` WHERE Key_name = 'PRIMARY'";
         $res=$this->Query($sql);
         return $this->getArray($res)[0]['Column_name'] ?? null;
     }
     
-    private function es($string):string{
+    private function es($string): string{
         return mysqli_real_escape_string($this->connectId,$string);
+    }
+    
+    public function Count(): int{
+        $sql = "SELECT count(*) FROM `".$this->callTable."`";
+        $res=$this->Query($sql);
+        $data=mysqli_fetch_assoc($res);
+        return (int) $data['count(*)'];
+    }
+    
+    public function Drop(): void{
+        $sql = "DROP Table `".$this->callTable."`";
+        $res=$this->Query($sql);
     }
     
 }

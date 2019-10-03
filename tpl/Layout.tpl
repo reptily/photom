@@ -1,9 +1,9 @@
 <html>
     <head>
-        <title>openWeb</title>
-        <?php openWeb\CSRF::Print(); ?>
-        <?php openWeb\Tools::Css(); ?>
-        <?php openWeb\Tools::Js(); ?>
+        <title>Photom micro framework</title>
+        <?php Ph\CSRF::Print(); ?>
+        <?php Ph\Tools::Css(); ?>
+        <?php Ph\Tools::Js(); ?>
     </head>
     <body>
         <?php $Tpl->Init(); ?>
