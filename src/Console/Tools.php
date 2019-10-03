@@ -15,7 +15,7 @@ class Tools{
 	}
 	
 	static public function getTpl($file, $values = []){
-		$file = "tpl/".$file.".tpl";
+		$file = "vendor/photom/framework/tpl/".$file.".tpl";
 		if (is_file($file)){
 			$data = file_get_contents($file);
 			foreach ($values as $i=>$value){

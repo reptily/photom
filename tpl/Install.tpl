@@ -1,9 +1,3 @@
 <?php
-namespace App\Controller;
-
-class Home
-{
-    public function Init(){
-        return ['tpl' => 'home'];
-    }
-}
+include "../vendor/autoload.php";
+\Ph\Main::Init();
