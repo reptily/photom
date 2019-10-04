@@ -84,4 +84,5 @@ public $help = "";
         $tpl = Tools::getTpl("Middleware",['Name' => ucfirst($name)]);
 		Tools::createFile("App/Middleware/".ucfirst($name).".php",$tpl);
     }
+    
 }

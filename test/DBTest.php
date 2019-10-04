@@ -50,12 +50,41 @@ class DBTest extends TestCase
 		$this->DB->{$this->table}->Insert($test);
 	}
 	
+	private function createSubTable(){
+		$table = [
+                "id" =>[
+                        "type"=>"int",
+                        "count"=>11,
+                        "isNull"=>false,
+                        "autoIncrement"=>true
+                ],
+				"sId"=>[
+					"type"=>"int",
+                    "count"=>11,
+				],
+                "name"=>[]
+        ];
+		
+		$this->DB->Create("sub",$table);
+		
+		$value = [
+			["id" => "1", "sId" => "1", "name" => "First"],
+			["id" => "2", "sId" => "1", "name" => "Second"],
+			["id" => "3", "sId" => "2", "name" => "Third"],
+		];
+		
+		$this->DB->sub->Insert($value);
+	}
+	
 	/**
 	 * After passing the test, you need to delete everything
 	 */
         
     public function tearDown(): void{
 		$this->DB->{$this->table}->Drop();
+		if ($this->DB->sub){
+			$this->DB->sub->Drop();
+		}
 	}
 	
 	/**
@@ -145,4 +174,63 @@ class DBTest extends TestCase
 		];
 		$this->assertSame($test, $arr);
 	}
+	
+	public function testInner(){
+		$this->createSubTable();
+		$this->insertMany();
+		$arr = $this->DB->{$this->table}->inner("sub")->on("id","sId")->Select()->getArray();
+			
+		$test = [
+			["id" => "1", "name" => "First", "sId" => "1"],
+			["id" => "2", "name" => "Second", "sId" => "1"],
+			["id" => "3", "name" => "Third", "sId" => "2"],
+		];
+		
+		$this->assertSame($test, $arr);
+	}
+	
+	public function testUpdate(){
+		$this->insertOne();
+		$this->DB->{$this->table}->set(["name" => "Piter"])->Update();
+		$test = $this->DB->{$this->table}->Select()->getRow();
+		$this->assertSame(["id" => "1", "name" => "Piter"], $test);
+	}
+	
+	public function testOrder(){
+		$this->insertMany();
+		$arr = $this->DB->{$this->table}->order("name","asc")->Select()->getArray();
+		
+		$test = [			
+			["id" => "2", "name" => "James"],
+			["id" => "3", "name" => "Lucas"],
+			["id" => "1", "name" => "Mark"],
+		];
+		
+		$this->assertSame($test, $arr);
+	}
+	
+	public function testLimit(){
+		$this->insertMany();
+		$arr = $this->DB->{$this->table}->limit(1)->Select()->getArray();
+		$this->assertSame([["id" => "1", "name" => "Mark"]], $arr);
+	}
+	
+	public function testLimitTwo(){
+		$this->insertMany();
+		$arr = $this->DB->{$this->table}->limit(2,3)->Select()->getArray();
+		
+		$this->assertSame([["id" => "3", "name" => "Lucas"]], $arr);
+	}
+	
+	public function testCount(){
+		$this->insertMany();
+		$this->assertSame(3, $this->DB->{$this->table}->Count());
+	}
+	
+	public function testTruncate(){
+		$this->insertMany();
+		$this->DB->{$this->table}->Truncate();
+		$this->assertSame(0, $this->DB->{$this->table}->Count());
+	}
+	
 }

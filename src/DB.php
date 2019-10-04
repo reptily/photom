@@ -128,7 +128,13 @@ class DB
     
     public function Select(): object{
         //Feild
-        $fields="* ";
+        $fields="`".$this->callTable."`.* ";
+        
+        //if join
+        if ($this->join != ""){
+            $fields .= ", `".$this->joinTable."`.* ";
+        }
+        
         if (is_array($this->field)){
             $fields="";
             foreach ($this->field as $f=>$field){
@@ -165,8 +171,8 @@ class DB
             $sql .= " LIMIT ".$this->limit;
         }
         
-        $sql.=";";    
-        $res=$this->Query($sql);	
+        $sql.=";";
+        $res=$this->Query($sql);
             
         return new class($res) extends DB{	    
             public $result;
@@ -358,6 +364,11 @@ class DB
     
     public function Drop(): void{
         $sql = "DROP Table `".$this->callTable."`";
+        $res=$this->Query($sql);
+    }
+    
+    public function Truncate(): void{
+        $sql = "TRUNCATE Table `".$this->callTable."`";
         $res=$this->Query($sql);
     }
     

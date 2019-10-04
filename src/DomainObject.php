@@ -23,9 +23,6 @@ class DomainObject
         $method="setter";
         $args=['key'=>mb_strtolower($a[1]),'val'=>$args[0]];
         break;
-      case 'vaidate':
-        $method="validate";
-        break;
       case 'to':
         $method="to";
         $args=['key'=>mb_strtolower($a[1])];
@@ -49,9 +46,9 @@ class DomainObject
     if ($key == "string"){
       $str = "";
       foreach ($this->model as $key => $value) {
-        $str .= "$key=$value ";
+        $str .= "$key=`$value` ";
       }
-      return $str;
+      return mb_substr($str, 0, -1);
     }
 
     if ($key == "array"){
@@ -60,6 +57,12 @@ class DomainObject
 
     if ($key == "json"){
       return json_encode($this->model);
+    }
+  }
+  
+  public function is($key,$val){
+    if ($key == "int"){
+      echo $val;
     }
   }
 
