@@ -27,6 +27,10 @@ The speed of development increases the built-in utility for creating the necessa
 
 The framework has support for Domain objects that can easily integrate with a business model
 
+7. Storage
+
+The framework has file tool
+
 ### Install
 
 ```
