@@ -16,6 +16,7 @@ class Install{
 		Tools::createDir("assets");
 		Tools::createDir("cache");
 		Tools::createDir("config");
+		Tools::createDir("storage");
 		chmod("cache",755);
 		
 		$index = Tools::getTpl("Install");
